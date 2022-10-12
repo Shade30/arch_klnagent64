@@ -1,0 +1,35 @@
+post_install(){
+    INITPROC=$(ps -o comm= -p 1)
+    if [ "$INITPROC" = "systemd" ] ; then
+        systemctl enable klnagent64
+    fi
+
+    perl /opt/kaspersky/klnagent64/lib/bin/setup/postinstall.pl deb
+}
+
+pre_upgrade(){
+    perl /opt/kaspersky/klnagent64/lib/bin/setup/uninstall.pl deb --upgrade
+}
+
+post_upgrade(){
+    INITPROC=$(ps -o comm= -p 1)
+    if [ "$INITPROC" = "systemd" ] ; then
+        systemctl enable klnagent64
+    fi
+
+    perl /opt/kaspersky/klnagent64/lib/bin/setup/postinstall.pl deb --upgrade
+}
+
+pre_remove(){
+    perl /opt/kaspersky/klnagent64/lib/bin/setup/uninstall.pl deb
+
+    INITPROC=$(ps -o comm= -p 1)
+    if [ "$INITPROC" = "systemd" ] ; then
+        systemctl stop klnagent64
+        systemctl disable klnagent64
+    fi
+}
+
+post_remove(){
+    rm -rf /etc/opt/kaspersky/klnagent /opt/kaspersky/klnagent64 /usr/share/licenses/klnagent64 /var/opt/kaspersky/klnagent
+}

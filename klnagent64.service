@@ -1,0 +1,11 @@
+[Unit]
+Description=klnagent64
+
+[Service]
+Type=forking
+Restart=no
+TimeoutStopSec=120
+ExecStart=/opt/kaspersky/klnagent64/sbin/klnagent
+
+[Install]
+WantedBy=multi-user.target
